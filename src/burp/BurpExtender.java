@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ui.Config;
 import ui.MainUI;
-
+//
 public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, IHttpListener {
     public static IBurpExtenderCallbacks callbacks;
     private PrintWriter stdout;
