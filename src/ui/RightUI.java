@@ -16,6 +16,7 @@ public class RightUI extends JPanel {
     private JTextField pathField;
     private JTextField threadField;
     private JTextField filterField;
+    private JCheckBox xssCheckBox;
     private JRadioButton rootScan;
     private JRadioButton multiLevelScan;
     private JRadioButton stopScan;
@@ -23,6 +24,7 @@ public class RightUI extends JPanel {
 
     public RightUI() {
         setLayout(new GridBagLayout());
+
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -45,11 +47,13 @@ public class RightUI extends JPanel {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     String path = fileChooser.getSelectedFile().getPath();
                     pathField.setText(path);
-                    Config.updateConfig(null,path,null,null, null);
+                    Config.updateConfig(null,path,null,null, null, null);
                     readTxtFileAndStoreContent(path);
                 }
             }
         });
+
+
 
         JLabel filterLabel = new JLabel("过滤器：");
         filterField = new JTextField();
@@ -62,14 +66,14 @@ public class RightUI extends JPanel {
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
                 String input = filterField.getText();
-                Config.updateConfig(null,null,null,null, input);
+                Config.updateConfig(null,null,null,null, input,null);
             }
         });
 
         JLabel threadLabel = new JLabel("线程数：");
         threadField = new JTextField(5);
         JLabel tipLabel = new JLabel();
-        JPanel threadPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        JPanel threadPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)); // 左对齐且无间距
         threadPanel.add(threadLabel);
         threadPanel.add(threadField);
         threadPanel.add(tipLabel);
@@ -82,10 +86,11 @@ public class RightUI extends JPanel {
                 if (!input.matches("\\d+")) {
                     tipLabel.setText("请输入纯数字");
                 } else {
-                    Config.updateConfig(null,null,input,null, null);
+                    Config.updateConfig(null,null,input,null, null,null);
                 }
             }
         });
+
 
         rootScan = new JRadioButton("根域名扫描");
         multiLevelScan = new JRadioButton("多层目录扫描");
@@ -106,11 +111,11 @@ public class RightUI extends JPanel {
         ActionListener radioButtonListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == rootScan) {
-                    Config.updateConfig(null,null,null, String.valueOf(1), null);
+                    Config.updateConfig(null,null,null, String.valueOf(1), null,null);
                 } else if (e.getSource() == multiLevelScan) {
-                    Config.updateConfig(null,null,null, String.valueOf(2), null);
+                    Config.updateConfig(null,null,null, String.valueOf(2), null,null);
                 } else if (e.getSource() == stopScan) {
-                    Config.updateConfig(null,null,null, String.valueOf(3), null);
+                    Config.updateConfig(null,null,null, String.valueOf(3), null,null);
                 }
             }
         };
@@ -121,22 +126,37 @@ public class RightUI extends JPanel {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
 
-        bottomLabel = new JLabel("test", SwingConstants.CENTER);
-        add(bottomLabel, gbc);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomLabel = new JLabel("【 漏洞检测模块 】", SwingConstants.CENTER);
+        xssCheckBox = new JCheckBox("启用 XSS 检测");
+        xssCheckBox.setSelected(false);
+
+        xssCheckBox.addActionListener(e -> {
+            Config.updateConfig(null, null, null, null, null, String.valueOf(xssCheckBox.isSelected()));
+        });
+
+        bottomPanel.add(bottomLabel, BorderLayout.CENTER);
+        bottomPanel.add(xssCheckBox, BorderLayout.SOUTH);
+
+        add(bottomPanel, gbc);
     }
 
     public void setPathFieldText(String dirFile) {
         pathField.setText(dirFile);
     }
-
     public void setfilterField(String filterUrl) {
         filterField.setText(filterUrl);
     }
-
     public void setThreadField(String threadNum) {
         threadField.setText(threadNum);
     }
-
+    public void setXssField(String xssEnable) {
+        if (xssEnable.equals("true")) {
+            xssCheckBox.setSelected(true);
+        } else{
+            xssCheckBox.setSelected(false);
+        }
+    }
     public void settypeScan(String typeScan) {
         rootScan.setSelected(false);
         multiLevelScan.setSelected(false);
@@ -167,6 +187,7 @@ public class RightUI extends JPanel {
     public ArrayList<String> getFileContentList() {
         return fileContentList;
     }
+
 
     public void setResult(String result) {
         bottomLabel.setText(result);
