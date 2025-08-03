@@ -43,7 +43,7 @@ public class BurpExtender implements IBurpExtender, ITab, IContextMenuFactory, I
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
 
         this.stdout.println("===============================");
-        this.stdout.println("TLA Watcher V1.1 Loaded Successfully!!!!\n");
+        this.stdout.println("TLA Watcher V1.2 Loaded Successfully!!!!\n");
         this.stdout.println("Project URL: https://github.com/SharpKean/Brup_TLA");
         this.stdout.println("Author: SharpKean");
         this.stdout.println("===============================");
